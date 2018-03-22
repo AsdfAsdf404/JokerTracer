@@ -2,14 +2,26 @@
 #include "Vector.h"
 #include "Ray.h"
 #include <iostream>
+#include "Sphere.h"
+#include "Intersect.h"
 
 using namespace NMath;
 const int WIDTH = 800;
 const int HEIGHT = 600;
 
-Vector3 getColor(const Ray ray)
+Vector3 getColor(const Ray &ray)
 {
 	Vector3 out;
+	Sphere sphere(Vector3(0, 0, -1), 0.5);
+	float res = Intersect::isIntersect(ray, sphere);
+
+	if (res > 0)
+	{
+		Vector3 normal = (ray.getPoint(res) - Vector3(sphere.m_Center));
+		normal.normalize();
+		out = 0.5 * Vector3(normal.x + 1, normal.y + 1, normal.z + 1);
+		return out;
+	}
 
 	Vector3 dir = ray.getDirction();
 	dir.normalize();
@@ -28,19 +40,19 @@ void setColor(int w, int h)
 	int * color = (int *)s_color;
 	for (int i = 0; i < w; i++)
 	{
-		for (int j = 0; j< h; j++)
+		for (int j = 0; j < h; j++)
 		{
 			int pos = j * w + i;
 			char * xp = (char*)(&color[pos]);
-			
+
 			float u = (float)i / (float)w;
 			float v = (float)j / (float)h;
 			Vector3 dir = LeftDown + u * WDir + v * HDir;
 			Ray ray(Origin, dir);
 			Vector3 c3 = getColor(ray);
-			xp[0] = (char)(255 * c3.z);
-			xp[1] = (char)(255 * c3.y);
-			xp[2] = (char)(255 * c3.x);
+			xp[0] = 255 * c3.z;
+			xp[1] = 255 * c3.y;
+			xp[2] = 255 * c3.x;
 			xp[3] = 0;
 		}
 	}
