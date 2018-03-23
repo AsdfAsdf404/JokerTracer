@@ -2,7 +2,7 @@
 #define __RAY_H__
 #include "Vector.h"
 
-namespace NMath
+namespace Joker
 {
 	class Ray
 	{

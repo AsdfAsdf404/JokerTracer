@@ -1,25 +1,22 @@
 #ifndef __SPHERE_H__
 #define __SPHERE_H__
 #include "Vector.h"
-
-namespace NMath
+#include "Material.h"
+namespace Joker
 {
+	class Material;
+
 	class Sphere
 	{
 	public:
-		Sphere():m_Radius(0), m_Center(0,0,0)
-		{
+		Sphere();
 
-		}
-
-		Sphere(Vector3 center, float r): m_Radius(r), m_Center(center)
-		{
-
-		}
+		Sphere(Vector3 center, float r, Material* mat);
 
 	public:
 		Vector3 m_Center;
 		float	m_Radius;
+		Material* m_mat;
 	};
 }
 #endif

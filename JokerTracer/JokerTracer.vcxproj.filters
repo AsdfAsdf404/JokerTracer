@@ -30,12 +30,27 @@
     <ClInclude Include="Source\Window.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="Source\Material.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Camera.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\main.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="Source\Vector.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Intersect.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Material.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Sphere.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

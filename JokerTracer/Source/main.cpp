@@ -6,47 +6,36 @@
 #include "Intersect.h"
 #include "Camera.h"
 #include <stdlib.h>
+#include "Material.h"
 
-
-using namespace NMath;
+using namespace Joker;
 const int WIDTH = 800;
 const int HEIGHT = 600;
 
-#define m 0x100000000LL  
-#define c 0xB16  
-#define a 0x5DEECE66DLL  
 
-static unsigned long long seed = 1;
 
-double drand48(void)
-{
-	seed = (a * seed + c) & 0xFFFFFFFFFFFFLL;
-	unsigned int x = seed >> 16;
-	return  ((double)x / (double)m);
-}
-
-Vector3 randomInSphere()
-{
-	Vector3 p;
-	float result;
-	do 
-	{
-		p = 2.0 * Vector3(drand48(), drand48(), drand48()) - Vector3(1,1,1);
-		result = dot(p, p);
-	}
-	while (result >= 1.0);
-
-	return p;
-}
-
-Vector3 getColor(const Ray &ray, hitable_list& world)
+Vector3 getColor(const Ray &ray, hitable_list& world, int depth)
 {
 	hit_record hit;
-	if (world.hit(ray, 0,555555555, hit))
+	if (world.hit(ray, 0,555555, hit))
 	{
 		//return 0.5 * Vector3(hit.normal.x + 1, hit.normal.y + 1, hit.normal.z + 1);
-		Vector3 target = hit.point + hit.normal + randomInSphere();
-		return 0.5 * getColor(Ray(hit.point, target - hit.point), world);
+
+		//Vector3 target = hit.point + hit.normal + randomInSphere();
+		//return 0.5 * getColor(Ray(hit.point, target - hit.point), world);
+
+		Ray scater;
+		Vector3 attenuation;
+		if (depth < 50 && hit.material->scanter(ray, hit, attenuation, scater))
+		{
+			Vector3 co = getColor(scater, world, depth + 1);
+			co = Vector3(co.x * attenuation.x, co.y * attenuation.y, co.z * attenuation.z);
+			return co;
+		} 
+		else
+		{
+			return Vector3(0, 0, 0);
+		}
 	}
 	else
 	{
@@ -63,10 +52,12 @@ void setColor(int width, int height)
 {
 	Camera cam;
 
-	Sphere *s1 = new Sphere(Vector3(0, 0, -1), 0.5f);
-	Sphere *s2 = new Sphere(Vector3(0, -100.5, -1), 100);
+	Sphere *s1 = new Sphere(Vector3(0, 0, -1), 0.5f, new Lambertian(Vector3(0.8,0.3,0.3)));
+	Sphere *s2 = new Sphere(Vector3(0, -100.5, -1), 100, new Lambertian(Vector3(0.8,0.8,0.0)));
+	Sphere *s3 = new Sphere(Vector3(1, 0, -1), 0.5, new Metal(Vector3(0.8, 0.6, 0.2)));
+	Sphere *s4 = new Sphere(Vector3(-1, 0, -1), 0.5, new Metal(Vector3(0.8, 0.8, 0.8)));
 
-	std::vector<Sphere*> slist{ s1, s2 };
+	std::vector<Sphere*> slist{ s1, s2, s3, s4 };
 	hitable_list hitlist(slist);
 
 	int samples = 1;
@@ -85,7 +76,7 @@ void setColor(int width, int height)
 
 				Ray ray = cam.getRay(u, v);
 
-				c3 = c3 + getColor(ray, hitlist);
+				c3 = c3 + getColor(ray, hitlist, 0);
 			}
 				
 			c3 = c3 / samples;

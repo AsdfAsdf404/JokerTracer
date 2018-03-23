@@ -2,7 +2,7 @@
 #include "Vector.h"
 #include "Ray.h"
 
-namespace NMath
+namespace Joker
 {
 	class Camera
 	{

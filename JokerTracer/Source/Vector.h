@@ -1,7 +1,7 @@
 #ifndef __MATH_VECTOR_H__
 #define __MATH_VECTOR_H__
 #include <math.h>
-namespace NMath
+namespace Joker
 {
 	class Vector2;
 	class Vector3;
