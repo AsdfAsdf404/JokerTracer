@@ -4,58 +4,101 @@
 #include <iostream>
 #include "Sphere.h"
 #include "Intersect.h"
+#include "Camera.h"
+#include <stdlib.h>
+
 
 using namespace NMath;
 const int WIDTH = 800;
 const int HEIGHT = 600;
 
-Vector3 getColor(const Ray &ray)
+#define m 0x100000000LL  
+#define c 0xB16  
+#define a 0x5DEECE66DLL  
+
+static unsigned long long seed = 1;
+
+double drand48(void)
 {
-	Vector3 out;
-	Sphere sphere(Vector3(0, 0, -1), 0.5);
-	float res = Intersect::isIntersect(ray, sphere);
-
-	if (res > 0)
-	{
-		Vector3 normal = (ray.getPoint(res) - Vector3(sphere.m_Center));
-		normal.normalize();
-		out = 0.5 * Vector3(normal.x + 1, normal.y + 1, normal.z + 1);
-		return out;
-	}
-
-	Vector3 dir = ray.getDirction();
-	dir.normalize();
-	float t = 0.5 * (dir.y + 1.0);
-	out = (1.0 - t)*Vector3(1.0, 1.0, 1.0) + t *Vector3(0.5, 0.7, 1.0);
-	return out;
+	seed = (a * seed + c) & 0xFFFFFFFFFFFFLL;
+	unsigned int x = seed >> 16;
+	return  ((double)x / (double)m);
 }
 
-void setColor(int w, int h)
+Vector3 randomInSphere()
 {
-	Vector3 LeftDown(-4, -3, -1);
-	Vector3 HDir(6, 0, 0);
-	Vector3 WDir(0, 8, 0);
-	Vector3 Origin(0, 0, 0);
+	Vector3 p;
+	float result;
+	do 
+	{
+		p = 2.0 * Vector3(drand48(), drand48(), drand48()) - Vector3(1,1,1);
+		result = dot(p, p);
+	}
+	while (result >= 1.0);
+
+	return p;
+}
+
+Vector3 getColor(const Ray &ray, hitable_list& world)
+{
+	hit_record hit;
+	if (world.hit(ray, 0,555555555, hit))
+	{
+		//return 0.5 * Vector3(hit.normal.x + 1, hit.normal.y + 1, hit.normal.z + 1);
+		Vector3 target = hit.point + hit.normal + randomInSphere();
+		return 0.5 * getColor(Ray(hit.point, target - hit.point), world);
+	}
+	else
+	{
+		Vector3 dir = ray.getDirction();
+		dir.normalize();
+
+		float t = 0.5 * ( dir.y + 1.0);
+		return (1 - t)*Vector3(1.0, 1.0, 1.0) + t * Vector3(0.5,0.7,1.0);
+	}
+
+}
+
+void setColor(int width, int height)
+{
+	Camera cam;
+
+	Sphere *s1 = new Sphere(Vector3(0, 0, -1), 0.5f);
+	Sphere *s2 = new Sphere(Vector3(0, -100.5, -1), 100);
+
+	std::vector<Sphere*> slist{ s1, s2 };
+	hitable_list hitlist(slist);
+
+	int samples = 1;
 
 	int * color = (int *)s_color;
-	for (int i = 0; i < w; i++)
+	for (int i = 0; i < width; i++)
 	{
-		for (int j = 0; j < h; j++)
+		for (int j = 0; j < height; j++)
 		{
-			int pos = j * w + i;
-			char * xp = (char*)(&color[pos]);
+			Vector3 c3;
 
-			float u = (float)i / (float)w;
-			float v = (float)j / (float)h;
-			Vector3 dir = LeftDown + u * WDir + v * HDir;
-			Ray ray(Origin, dir);
-			Vector3 c3 = getColor(ray);
+			for (int k = 0; k < samples; k++)
+			{
+				float u = (float)(i + drand48()) / (float)width;
+				float v = (float)(j + drand48()) / (float)height;
+
+				Ray ray = cam.getRay(u, v);
+
+				c3 = c3 + getColor(ray, hitlist);
+			}
+				
+			c3 = c3 / samples;
+
+			int pos = j * width + i;
+			char * xp = (char*)(&color[pos]);
 			xp[0] = 255 * c3.z;
 			xp[1] = 255 * c3.y;
 			xp[2] = 255 * c3.x;
 			xp[3] = 0;
 		}
 	}
+	
 }
 
 int main(void)

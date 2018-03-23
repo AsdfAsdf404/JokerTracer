@@ -17,7 +17,7 @@ namespace NMath
 
 		}
 
-		Vector3 getPoint(float t) const
+		Vector3 getPoint(float t)const
 		{
 			return (m_Position + m_Dirction * t);
 		}
