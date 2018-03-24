@@ -89,5 +89,6 @@ Joker::Vector3 Joker::randomInSphere()
 		result = dot(p, p);
 	} while (result >= 1.0);
 
+	p.normalize();
 	return p;
 }

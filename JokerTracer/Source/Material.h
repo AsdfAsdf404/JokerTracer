@@ -27,11 +27,12 @@ namespace Joker
 	class Metal : public Material
 	{
 	public:
-		Metal(const Vector3 & a);
+		Metal(const Vector3 & a,  float  fuzz);
 
 		virtual bool scanter(const Ray &ray, const hit_record & rec, Vector3 & attenuation, Ray &scatter)const;
 
 		Vector3 albedo;
+		float fuzz;
 	};
 }
 #endif

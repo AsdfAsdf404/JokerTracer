@@ -54,13 +54,13 @@ void setColor(int width, int height)
 
 	Sphere *s1 = new Sphere(Vector3(0, 0, -1), 0.5f, new Lambertian(Vector3(0.8,0.3,0.3)));
 	Sphere *s2 = new Sphere(Vector3(0, -100.5, -1), 100, new Lambertian(Vector3(0.8,0.8,0.0)));
-	Sphere *s3 = new Sphere(Vector3(1, 0, -1), 0.5, new Metal(Vector3(0.8, 0.6, 0.2)));
-	Sphere *s4 = new Sphere(Vector3(-1, 0, -1), 0.5, new Metal(Vector3(0.8, 0.8, 0.8)));
+	Sphere *s3 = new Sphere(Vector3(1, 0, -1), 0.5, new Metal(Vector3(0.8, 0.6, 0.2), 1.0));
+	Sphere *s4 = new Sphere(Vector3(-1, 0, -1), 0.5, new Metal(Vector3(0.8, 0.8, 0.8),0.3));
 
 	std::vector<Sphere*> slist{ s1, s2, s3, s4 };
 	hitable_list hitlist(slist);
 
-	int samples = 1;
+	int samples = 40;
 
 	int * color = (int *)s_color;
 	for (int i = 0; i < width; i++)
@@ -80,12 +80,12 @@ void setColor(int width, int height)
 			}
 				
 			c3 = c3 / samples;
-
+			
 			int pos = j * width + i;
 			char * xp = (char*)(&color[pos]);
-			xp[0] = 255 * c3.z;
-			xp[1] = 255 * c3.y;
-			xp[2] = 255 * c3.x;
+			xp[0] = 255 * sqrt(c3.z);
+			xp[1] = 255 * sqrt(c3.y);
+			xp[2] = 255 * sqrt(c3.x);
 			xp[3] = 0;
 		}
 	}
