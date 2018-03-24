@@ -53,6 +53,12 @@ Joker::Vector3 Joker::Vector3::cross(const Vector3 &other)
 }
 
 
+float Joker::Vector3::legth()
+{
+	float res = x * x + y * y + z * z;
+	return sqrt(res);
+}
+
 Joker::Vector4::Vector4(Joker::Vector3 pos, float ww) :x(pos.x), y(pos.y), z(pos.z), w(ww)
 {
 

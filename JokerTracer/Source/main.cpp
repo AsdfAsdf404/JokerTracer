@@ -55,12 +55,13 @@ void setColor(int width, int height)
 	Sphere *s1 = new Sphere(Vector3(0, 0, -1), 0.5f, new Lambertian(Vector3(0.8,0.3,0.3)));
 	Sphere *s2 = new Sphere(Vector3(0, -100.5, -1), 100, new Lambertian(Vector3(0.8,0.8,0.0)));
 	Sphere *s3 = new Sphere(Vector3(1, 0, -1), 0.5, new Metal(Vector3(0.8, 0.6, 0.2), 1.0));
-	Sphere *s4 = new Sphere(Vector3(-1, 0, -1), 0.5, new Metal(Vector3(0.8, 0.8, 0.8),0.3));
+	Sphere *s4 = new Sphere(Vector3(-1, 0, -1), 0.5, new Dielectric(1.5));
+	Sphere *s5 = new Sphere(Vector3(-1, 0, -1), -0.45, new Dielectric(1.5));
 
 	std::vector<Sphere*> slist{ s1, s2, s3, s4 };
 	hitable_list hitlist(slist);
 
-	int samples = 40;
+	int samples = 100;
 
 	int * color = (int *)s_color;
 	for (int i = 0; i < width; i++)

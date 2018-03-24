@@ -41,7 +41,7 @@ namespace Joker
 
 		Vector3 cross(const Vector3 &other);
 
-
+		float legth();
 	public:
 		union
 		{

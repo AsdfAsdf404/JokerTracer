@@ -23,7 +23,10 @@ namespace Joker
 	};
 
 	Vector3 reflect(const Vector3 & v, const Vector3 normal);
+	
+	bool refract(const Vector3 & v, const Vector3 &n, float ni_over_nt, Vector3 & result);
 
+	float schlick(float cosine, float ref_idx);
 	class Metal : public Material
 	{
 	public:
@@ -33,6 +36,16 @@ namespace Joker
 
 		Vector3 albedo;
 		float fuzz;
+	};
+
+
+	class Dielectric : public Material
+	{
+	public:
+		Dielectric(float ri);
+		virtual bool scanter(const Ray &ray_in, const hit_record & rec, Vector3 & attenuation, Ray &scatter)const;
+
+		float ref_idx;
 	};
 }
 #endif

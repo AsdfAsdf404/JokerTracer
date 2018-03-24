@@ -1,3 +1,3 @@
 # JokerTracer
 Joker Ray Tracing
-学习目的，参考教程写的Ray Tracing
+学习目的，参考Kevin Suffern的Ray Tracing教程
