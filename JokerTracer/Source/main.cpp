@@ -50,7 +50,11 @@ Vector3 getColor(const Ray &ray, hitable_list& world, int depth)
 
 void setColor(int width, int height)
 {
-	Camera cam;
+	Vector3 from = Vector3(-2, 2, 1);
+	Vector3 at = Vector3(0, 0, -1);
+	float dis_to_focus = (from - at).legth();
+	float aperture = 0.2;
+	Camera cam(from, at, Vector3(0,1,0), 60, (float) width/ (float)height, aperture, dis_to_focus);
 
 	Sphere *s1 = new Sphere(Vector3(0, 0, -1), 0.5f, new Lambertian(Vector3(0.8,0.3,0.3)));
 	Sphere *s2 = new Sphere(Vector3(0, -100.5, -1), 100, new Lambertian(Vector3(0.8,0.8,0.0)));
@@ -61,7 +65,7 @@ void setColor(int width, int height)
 	std::vector<Sphere*> slist{ s1, s2, s3, s4 };
 	hitable_list hitlist(slist);
 
-	int samples = 100;
+	int samples = 20;
 
 	int * color = (int *)s_color;
 	for (int i = 0; i < width; i++)
@@ -95,11 +99,6 @@ void setColor(int width, int height)
 
 int main(void)
 {
-	int indicator = 0;
-	int kbhit = 0;
-	float alpha = 1;
-	float pos = 3.5;
-
 	TCHAR *title = _T("Test - Test");
 
 	if (screen_init(800, 600, title))return -1;
@@ -109,25 +108,6 @@ int main(void)
 	while (screen_exit == 0 && screen_keys[VK_ESCAPE] == 0)
 	{
 		screen_dispatch();
-
-		if (screen_keys[VK_UP]) pos -= 0.01f;
-		if (screen_keys[VK_DOWN]) pos += 0.01f;
-		if (screen_keys[VK_LEFT]) alpha += 0.01f;
-		if (screen_keys[VK_RIGHT]) alpha -= 0.01f;
-
-		if (screen_keys[VK_SPACE])
-		{
-			if (kbhit == 0)
-			{
-				kbhit = 1;
-				if (++indicator >= 3) indicator = 0;
-				//device.render_state = states[indicator];
-			}
-		}
-		else
-		{
-			kbhit = 0;
-		}
 
 		screen_update();
 		Sleep(1);

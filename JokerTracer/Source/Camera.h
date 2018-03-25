@@ -7,22 +7,15 @@ namespace Joker
 	class Camera
 	{
 	public:
-		Camera()
-		{
-			origin = Vector3(0,0,0);
-			leftDown = Vector3(-4, -3, -1);
-			horizontal = Vector3(8.0, 0.0, 0.0);
-			vertical = Vector3(0.0, 6.0, 0.0);
-		}
+		Camera(Vector3 lookfrom, Vector3 lookat, Vector3 vup, float vfov, float aspect, float aperture, float focus_dist);
 
-		Ray getRay(float u, float v)
-		{
-			return Ray(origin, leftDown + u *horizontal + v * vertical - origin);
-		}
+		Ray getRay(float u, float v);
 	
 		Vector3 origin;
 		Vector3 leftDown;
 		Vector3 horizontal;
 		Vector3 vertical;
+		Vector3 u, v, w;
+		float lens_radius;
 	};
 }
